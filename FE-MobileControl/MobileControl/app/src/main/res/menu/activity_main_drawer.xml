@@ -22,6 +22,11 @@
                 android:title="Clientes" />
 
             <item
+                android:id="@+id/nav_agencias"
+                android:icon="@android:drawable/ic_menu_sort_by_size"
+                android:title="Agencias" />
+
+            <item
                 android:id="@+id/nav_salir"
                 android:icon="@android:drawable/ic_lock_power_off"
                 android:title="Salir" />

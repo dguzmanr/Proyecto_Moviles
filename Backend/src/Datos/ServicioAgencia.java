@@ -18,9 +18,9 @@ import oracle.jdbc.OracleTypes;
  * @author david
  */
 public class ServicioAgencia extends Servicio{
-    private static final String INSERTARAGENCIA = "{call INSERTARAGENCIA(?,?,?,?)}";
+    private static final String INSERTARAGENCIA = "{call INSERTARAGENCIA(?,?,?,?,?,?)}";
     private static final String ELIMINARAGENCIA = "{call ELIMINARAGENCIA(?)}";  
-    private static final String MODIFICARAGENCIA = "{call MODIFICARAGENCIA(?,?,?,?)}";
+    private static final String MODIFICARAGENCIA = "{call MODIFICARAGENCIA(?,?,?,?,?,?)}";
     private static final String LISTARAGENCIAS = "{?=call LISTARAGENCIAS()}";
     
     public boolean insertarAgencia(Agencia agencia) throws GlobalException  	

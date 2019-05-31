@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.mobilecontrol.Activities.AddUpdClienteActivity">
+    tools:context="com.example.mobilecontrol.Activities.AddUpdAgenciaActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,11 +26,11 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/cedulaAddUpdCliente"
+                android:id="@+id/codigoAddUpdAgencia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:hint="Cedula"
+                android:hint="Codigo"
                 android:inputType="textPersonName" />
         </android.support.design.widget.TextInputLayout>
 
@@ -39,7 +39,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/nombreAddUpdCliente"
+                android:id="@+id/nombreAddUpdAgencia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -52,7 +52,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/telefonoAddUpdCliente"
+                android:id="@+id/telefonoAddUpdAgencia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -66,7 +66,7 @@
             android:layout_height="wrap_content">
 
             <EditText
-                android:id="@+id/emailAddUpdCliente"
+                android:id="@+id/emailAddUpdAgencia"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ems="10"
@@ -74,9 +74,35 @@
                 android:inputType="textEmailAddress" />
         </android.support.design.widget.TextInputLayout>
 
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/ubicacionAddUpdAgencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Ubicacion"
+                android:inputType="textPersonName" />
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/horarioAddUpdAgencia"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:hint="Horario"
+                android:inputType="textPersonName" />
+        </android.support.design.widget.TextInputLayout>
+
 
         <android.support.design.widget.FloatingActionButton
-            android:id="@+id/addUpdClienteBtn"
+            android:id="@+id/addUpdAgenciaBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end|bottom"

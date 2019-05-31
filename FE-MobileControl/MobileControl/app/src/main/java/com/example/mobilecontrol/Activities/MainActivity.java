@@ -13,25 +13,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.util.Log;
 
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-
-import android.os.AsyncTask;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.mobilecontrol.LogicaNegocio.Cliente;
-import com.example.mobilecontrol.LogicaNegocio.Estudiante;
 import com.example.mobilecontrol.R;
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -122,16 +108,10 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this, " Clientes.", Toast.LENGTH_LONG).show();
             abrirAdmCliente();
         }
-        //else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        }
-//        } else if (id == R.id.nav_send) {
-//
-//        }
+        else if (id == R.id.nav_agencias) {
+            Toast.makeText(this, " Agencias.", Toast.LENGTH_LONG).show();
+            abrirAdmAgencia();
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
@@ -140,6 +120,11 @@ public class MainActivity extends AppCompatActivity
 
     public void abrirAdmCliente() {
         Intent intent = new Intent(this, AdmClienteActivity.class);
+        startActivity(intent);
+    }
+
+    public void abrirAdmAgencia() {
+        Intent intent = new Intent(this, AdmAgenciaActivity.class);
         startActivity(intent);
     }
 

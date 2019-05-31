@@ -9,35 +9,41 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.mobilecontrol.LogicaNegocio.Cliente;
+import com.example.mobilecontrol.LogicaNegocio.Agencia;
 import com.example.mobilecontrol.R;
 
-public class AddUpdClienteActivity extends AppCompatActivity {
+public class AddUpdAgenciaActivity extends AppCompatActivity {
     private FloatingActionButton fBtn;
     private boolean editable = true;
     private EditText nomFld;
-    private EditText cedFld;
+    private EditText codFld;
     private EditText emailFld;
     private EditText telFld;
+    private EditText ubiFld;
+    private EditText horFld;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_upd_cliente);
+        setContentView(R.layout.activity_add_upd_agencia);
         editable = true;
 
         // button check
-        fBtn = findViewById(R.id.addUpdClienteBtn);
+        fBtn = findViewById(R.id.addUpdAgenciaBtn);
 
         //cleaning stuff
-        cedFld = findViewById(R.id.cedulaAddUpdCliente);
-        emailFld = findViewById(R.id.emailAddUpdCliente);
-        telFld=findViewById(R.id.telefonoAddUpdCliente);
-        nomFld=findViewById(R.id.nombreAddUpdCliente);
+        codFld = findViewById(R.id.codigoAddUpdAgencia);
+        emailFld = findViewById(R.id.emailAddUpdAgencia);
+        telFld=findViewById(R.id.telefonoAddUpdAgencia);
+        nomFld=findViewById(R.id.nombreAddUpdAgencia);
+        horFld=findViewById(R.id.horarioAddUpdAgencia);
+        ubiFld=findViewById(R.id.ubicacionAddUpdAgencia);
         nomFld.setText("");
-        cedFld.setText("");
+        codFld.setText("");
         emailFld.setText("");
         telFld.setText("");
+        horFld.setText("");
+        ubiFld.setText("");
 
         //receiving data from admAlumnoActivity
         Bundle extras = getIntent().getExtras();
@@ -45,17 +51,19 @@ public class AddUpdClienteActivity extends AppCompatActivity {
 
             editable = extras.getBoolean("editable");
             if (editable) {   // is editing some row
-                Cliente aux = (Cliente) getIntent().getSerializableExtra("cliente");
-                cedFld.setText(aux.getCedula());
-                cedFld.setEnabled(false);
+                Agencia aux = (Agencia) getIntent().getSerializableExtra("agencia");
+                codFld.setText(aux.getCodigo());
+                codFld.setEnabled(false);
                 nomFld.setText(aux.getNombre());
                 emailFld.setText(aux.getEmail());
                 telFld.setText(aux.getTelefono());
+                ubiFld.setText(aux.getUbicacion());
+                horFld.setText(aux.getHorario());
                 //edit action
                 fBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        editCliente();
+                        editAgencia();
                     }
                 });
             } else {         // is adding new Carrera object
@@ -63,35 +71,35 @@ public class AddUpdClienteActivity extends AppCompatActivity {
                 fBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        addCliente();
+                        addAgencia();
                     }
                 });
             }
         }
     }
 
-    public void addCliente() {
+    public void addAgencia() {
         if (validateForm()) {
             //do something
-            Cliente cliente = new Cliente(cedFld.getText().toString(), nomFld.getText().toString(),
+            Agencia agencia = new Agencia(codFld.getText().toString(), nomFld.getText().toString(),
                     telFld.getText().toString(),
-                    emailFld.getText().toString());
-            Intent intent = new Intent(getBaseContext(), AdmClienteActivity.class);
+                    emailFld.getText().toString(),ubiFld.getText().toString(),horFld.getText().toString());
+            Intent intent = new Intent(getBaseContext(), AdmAgenciaActivity.class);
             //sending Alumno data
-            intent.putExtra("addCliente", cliente);
+            intent.putExtra("addAgencia", agencia);
             startActivity(intent);
             finish(); //prevent go back
         }
     }
 
-    public void editCliente() {
+    public void editAgencia() {
         if (validateForm()) {
-            Cliente cliente = new Cliente(cedFld.getText().toString(), nomFld.getText().toString(),
+            Agencia agencia = new Agencia(codFld.getText().toString(), nomFld.getText().toString(),
                     telFld.getText().toString(),
-                    emailFld.getText().toString());
-            Intent intent = new Intent(getBaseContext(), AdmClienteActivity.class);
+                    emailFld.getText().toString(),ubiFld.getText().toString(),horFld.getText().toString());
+            Intent intent = new Intent(getBaseContext(), AdmAgenciaActivity.class);
             //sending Alumno data
-            intent.putExtra("editCliente", cliente);
+            intent.putExtra("editAgencia", agencia);
             startActivity(intent);
             finish(); //prevent go back
         }
@@ -103,8 +111,8 @@ public class AddUpdClienteActivity extends AppCompatActivity {
             nomFld.setError("Nombre requerido");
             error++;
         }
-        if (TextUtils.isEmpty(this.cedFld.getText())) {
-            cedFld.setError("Cedula requerida");
+        if (TextUtils.isEmpty(this.codFld.getText())) {
+            codFld.setError("Codigo requerido");
             error++;
         }
         if (TextUtils.isEmpty(this.emailFld.getText())) {
@@ -113,6 +121,14 @@ public class AddUpdClienteActivity extends AppCompatActivity {
         }
         if (TextUtils.isEmpty(this.telFld.getText())) {
             telFld.setError("Telefono requerido");
+            error++;
+        }
+        if (TextUtils.isEmpty(this.ubiFld.getText())) {
+            telFld.setError("Ubicacion requerida");
+            error++;
+        }
+        if (TextUtils.isEmpty(this.horFld.getText())) {
+            telFld.setError("Horario requerido");
             error++;
         }
         if (error > 0) {

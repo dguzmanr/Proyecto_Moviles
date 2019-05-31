@@ -9,8 +9,13 @@ import Datos.GlobalException;
 import Datos.NoDataException;
 import Datos.ServicioAgencia;
 import Datos.ServicioCliente;
+import Datos.ServicioVehiculo;
 import Entidades.Agencia;
+import Entidades.Clasificacion;
 import Entidades.Cliente;
+import Entidades.Marca;
+import Entidades.Transmision;
+import Entidades.Vehiculo;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +27,8 @@ import java.util.List;
 public class Control {
     private ServicioCliente servicioCliente;
     private ServicioAgencia servicioAgencia;
+    private ServicioVehiculo servicioVehiculo;
+    
     private static Control uniqueInstance;
     public static Control instance()
     {
@@ -35,6 +42,7 @@ public class Control {
     {
         servicioCliente = new ServicioCliente();
         servicioAgencia = new ServicioAgencia();
+        servicioVehiculo = new ServicioVehiculo();
     }
     
     //Clientes
@@ -75,5 +83,32 @@ public class Control {
         return servicioAgencia.listarAgencias();
     }
     
+    //Vehiculos
+    public void insertarVehiculo(Vehiculo vehiculo) throws Exception{
+        servicioVehiculo.insertarVehiculo(vehiculo);
+    }
     
+    public void modificarVehiculo(Vehiculo vehiculo) throws Exception{
+        servicioVehiculo.editarVehiculo(vehiculo);
+    }
+    
+   public void eliminarVehiculo(String codigo) throws Exception{
+        servicioVehiculo.eliminarVehiculo(codigo);
+    }
+    
+    public ArrayList<Vehiculo> listarVehiculos() throws GlobalException, NoDataException{
+        return servicioVehiculo.listarVehiculos();
+    }
+    
+    public ArrayList<Clasificacion> listarClasificaciones() throws GlobalException, NoDataException{
+        return servicioVehiculo.listarClasificaciones();
+    }
+    
+    public ArrayList<Marca> listarMarcas() throws GlobalException, NoDataException{
+        return servicioVehiculo.listarMarcas();
+    }
+    
+    public ArrayList<Transmision> listarTrasmisiones() throws GlobalException, NoDataException{
+        return servicioVehiculo.listarTransmisiones();
+    }
 }

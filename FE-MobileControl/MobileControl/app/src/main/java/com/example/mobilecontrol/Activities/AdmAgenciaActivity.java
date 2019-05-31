@@ -24,14 +24,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-
-import com.example.mobilecontrol.Adapter.ClienteAdapter;
+import com.example.mobilecontrol.Adapter.AgenciaAdapter;
 import com.example.mobilecontrol.Helper.RecyclerItemTouchHelper;
-import com.example.mobilecontrol.LogicaNegocio.Cliente;
+import com.example.mobilecontrol.LogicaNegocio.Agencia;
 import com.example.mobilecontrol.R;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,35 +38,33 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdmClienteActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, ClienteAdapter.ClienteAdapterListener{
+public class AdmAgenciaActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, AgenciaAdapter.AgenciaAdapterListener{
 
     private RecyclerView mRecyclerView;
-    private ClienteAdapter mAdapter;
-    private List<Cliente> clienteList;
+    private AgenciaAdapter mAdapter;
+    private List<Agencia> agenciaList;
     private CoordinatorLayout coordinatorLayout;
     private SearchView searchView;
     private FloatingActionButton fab;
 
-   // String apiUrl = "http://192.168.0.24:8080/BE-LabConnection/ServiceCliente?";
-    String apiUrl = "http://10.20.106.109:8080/BE-LabConnection/ServiceCliente?";
-
+    String apiUrl = "http://10.20.106.109:8080/BE-LabConnection/ServiceAgencia?";
     String apiUrlTemporal = "";
   //  private ModelData model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_adm_cliente);
-        Toolbar toolbar = findViewById(R.id.toolbarCliente);
+        setContentView(R.layout.activity_adm_agencia);
+        Toolbar toolbar = findViewById(R.id.toolbarAgencia);
         setSupportActionBar(toolbar);
 
         //toolbar fancy stuff
        // getSupportActionBar().setTitle(getString(R.string.my_profesor));
 
-        mRecyclerView = findViewById(R.id.recycler_clienteFld);
-        clienteList = new ArrayList<>();
-        mAdapter = new ClienteAdapter(clienteList, this);
-        coordinatorLayout = findViewById(R.id.coordinator_layoutCliente);
+        mRecyclerView = findViewById(R.id.recycler_agenciaFld);
+        agenciaList = new ArrayList<>();
+        mAdapter = new AgenciaAdapter(agenciaList, this);
+        coordinatorLayout = findViewById(R.id.coordinator_layoutAgencia);
 
         // white background notification bar
         whiteNotificationBar(mRecyclerView);
@@ -84,11 +80,11 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute();
         // go to update or add career
-        fab = findViewById(R.id.addBtnCliente);
+        fab = findViewById(R.id.addBtnAgencia);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToAddUpdCliente();
+                goToAddUpdAgencia();
             }
         });
 
@@ -109,12 +105,12 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (direction == ItemTouchHelper.START) {
-            if (viewHolder instanceof ClienteAdapter.MyViewHolder) {
+            if (viewHolder instanceof AgenciaAdapter.MyViewHolder) {
                 // get the removed item name to display it in snack bar
-                String ced = clienteList.get(viewHolder.getAdapterPosition()).getCedula();
-                String name = clienteList.get(viewHolder.getAdapterPosition()).getNombre();
+                String cod = agenciaList.get(viewHolder.getAdapterPosition()).getCodigo();
+                String name = agenciaList.get(viewHolder.getAdapterPosition()).getNombre();
 
-                apiUrlTemporal = apiUrl + "opc=3&cedula="+ced;
+                apiUrlTemporal = apiUrl + "opc=3&codigo="+cod;
                 MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                 myAsyncTasks.execute();
                 // save the index deleted
@@ -138,11 +134,11 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
             }
         } else {
             //If is editing a row object
-            Cliente aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
+            Agencia aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
             //send data to Edit Activity
-            Intent intent = new Intent(this, AddUpdClienteActivity.class);
+            Intent intent = new Intent(this, AddUpdAgenciaActivity.class);
             intent.putExtra("editable", true);
-            intent.putExtra("cliente", aux);
+            intent.putExtra("agencia", aux);
             mAdapter.notifyDataSetChanged(); //restart left swipe view
             startActivity(intent);
         }
@@ -206,14 +202,14 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
             //Se actualiza el recycler view
          try {
                 Gson gson = new Gson();
-                ArrayList<Cliente> ClienteList= (ArrayList<Cliente>) gson.fromJson(s,
-                        new TypeToken<ArrayList<Cliente>>() {
+                ArrayList<Agencia> AgenciaList= (ArrayList<Agencia>) gson.fromJson(s,
+                        new TypeToken<ArrayList<Agencia>>() {
                         }.getType());
 
 
-                clienteList = ClienteList;
-                mAdapter = new ClienteAdapter(clienteList, AdmClienteActivity.this);
-                coordinatorLayout = findViewById(R.id.coordinator_layoutCliente);
+                agenciaList = AgenciaList;
+                mAdapter = new AgenciaAdapter(agenciaList, AdmAgenciaActivity.this);
+                coordinatorLayout = findViewById(R.id.coordinator_layoutAgencia);
 
                 // white background notification bar
                 whiteNotificationBar(mRecyclerView);
@@ -221,7 +217,7 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                mRecyclerView.addItemDecoration(new DividerItemDecoration(AdmClienteActivity.this, DividerItemDecoration.VERTICAL));
+                mRecyclerView.addItemDecoration(new DividerItemDecoration(AdmAgenciaActivity.this, DividerItemDecoration.VERTICAL));
                 mRecyclerView.setAdapter(mAdapter);
 
 
@@ -308,25 +304,25 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
     }
 
     @Override
-    public void onContactSelected(Cliente cliente) { //TODO get the select item of recycleView
-        Toast.makeText(getApplicationContext(), "Selected: " + cliente.getCedula() + ", " + cliente.getNombre(), Toast.LENGTH_LONG).show();
+    public void onContactSelected(Agencia agencia) { //TODO get the select item of recycleView
+        Toast.makeText(getApplicationContext(), "Selected: " + agencia.getCodigo() + ", " + agencia.getNombre(), Toast.LENGTH_LONG).show();
     }
 
     private void checkIntentInformation() {
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            Cliente aux;
-            aux = (Cliente) getIntent().getSerializableExtra("addCliente");
+            Agencia aux;
+            aux = (Agencia) getIntent().getSerializableExtra("addAgencia");
             if (aux == null) {
-                aux = (Cliente) getIntent().getSerializableExtra("editCliente");
+                aux = (Agencia) getIntent().getSerializableExtra("editAgencia");
                 if (aux != null) {
-                        apiUrlTemporal = apiUrl + "opc=4&cedula="+aux.getCedula()+"&nombre="+aux.getNombre()+"&telefono="+aux.getTelefono()+"&email="+aux.getEmail();
+                        apiUrlTemporal = apiUrl + "opc=4&codigo="+aux.getCodigo()+"&nombre="+aux.getNombre()+"&telefono="+aux.getTelefono()+"&email="+aux.getEmail()+"&ubicacion="+aux.getUbicacion()+"&horario="+aux.getHorario();
                         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                         myAsyncTasks.execute();
                         Toast.makeText(getApplicationContext(), aux.getNombre() + " editado correctamente", Toast.LENGTH_LONG).show();
                 }
             }else{
-                    apiUrlTemporal = apiUrl + "opc=2&cedula="+aux.getCedula()+"&nombre="+aux.getNombre()+"&telefono="+aux.getTelefono()+"&email="+aux.getEmail();
+                    apiUrlTemporal = apiUrl + "opc=2&codigo="+aux.getCodigo()+"&nombre="+aux.getNombre()+"&telefono="+aux.getTelefono()+"&email="+aux.getEmail()+"&ubicacion="+aux.getUbicacion()+"&horario="+aux.getHorario();
                     MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                     myAsyncTasks.execute();
                     Toast.makeText(getApplicationContext(), aux.getNombre() + " agregado correctamente", Toast.LENGTH_LONG).show();
@@ -335,8 +331,8 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
         }
     }
 
-    private void goToAddUpdCliente() {
-        Intent intent = new Intent(this, AddUpdClienteActivity.class);
+    private void goToAddUpdAgencia() {
+        Intent intent = new Intent(this, AddUpdAgenciaActivity.class);
         intent.putExtra("editable", false);
         startActivity(intent);
     }

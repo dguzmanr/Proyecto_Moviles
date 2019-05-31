@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
+import com.example.mobilecontrol.Adapter.AgenciaAdapter;
 import com.example.mobilecontrol.Adapter.ClienteAdapter;
 import com.example.mobilecontrol.LogicaNegocio.Cliente;
 
@@ -67,7 +68,11 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                 backgroundViewEdit = ((ClienteAdapter.MyViewHolder) viewHolder).viewBackgroundEdit;
                 backgroundViewDelete = ((ClienteAdapter.MyViewHolder) viewHolder).viewBackgroundDelete;
                 foregroundView = ((ClienteAdapter.MyViewHolder) viewHolder).viewForeground;
-            }
+            }else if (this.listener.getClass().getSimpleName().equals("AdmAgenciaActivity")) {
+                    backgroundViewEdit = ((AgenciaAdapter.MyViewHolder) viewHolder).viewBackgroundEdit;
+                    backgroundViewDelete = ((AgenciaAdapter.MyViewHolder) viewHolder).viewBackgroundDelete;
+                    foregroundView = ((AgenciaAdapter.MyViewHolder) viewHolder).viewForeground;
+                }
 //                else if (this.listener.getClass().getSimpleName().equals("AdmAlumnoActivity")) {
 //                backgroundViewEdit = ((AlumnoAdapter.MyViewHolder) viewHolder).viewBackgroundEdit;
 //                backgroundViewDelete = ((AlumnoAdapter.MyViewHolder) viewHolder).viewBackgroundDelete;
