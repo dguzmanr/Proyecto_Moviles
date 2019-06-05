@@ -111,6 +111,12 @@ public class MainActivity extends AppCompatActivity
         else if (id == R.id.nav_agencias) {
             Toast.makeText(this, " Agencias.", Toast.LENGTH_LONG).show();
             abrirAdmAgencia();
+        }else if(id == R.id.nav_vehiculos){
+            Toast.makeText(this, " Vehículos.", Toast.LENGTH_LONG).show();
+            abrirAdmVehiculos();
+        }else if(id == R.id.nav_reservas){
+            Toast.makeText(this, " Reservas.", Toast.LENGTH_LONG).show();
+            abrirAdmReservas();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -128,5 +134,13 @@ public class MainActivity extends AppCompatActivity
         startActivity(intent);
     }
 
+    public void abrirAdmVehiculos() {
+        Intent intent = new Intent(this, AdmVehiculoActivity.class);
+        startActivity(intent);
+    }
 
+    public void abrirAdmReservas() {
+        Intent intent = new Intent(this, AdmReservaActivity.class);
+        startActivity(intent);
+    }
 }

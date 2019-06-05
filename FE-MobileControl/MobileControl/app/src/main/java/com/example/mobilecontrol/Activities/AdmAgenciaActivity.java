@@ -47,7 +47,7 @@ public class AdmAgenciaActivity extends AppCompatActivity implements RecyclerIte
     private SearchView searchView;
     private FloatingActionButton fab;
 
-    String apiUrl = "http://10.20.106.109:8080/BE-LabConnection/ServiceAgencia?";
+    String apiUrl = "http://192.168.0.27:8080/BE-LabConnection/ServiceAgencia?";
     String apiUrlTemporal = "";
   //  private ModelData model;
 

@@ -34,6 +34,15 @@ public class ServiceVehiculo extends HttpServlet {
     private Control control = new Control();
     private String vehiculosJsonString;
     ArrayList<Vehiculo> vehiculos;
+    //
+    ArrayList<Clasificacion> clasificaciones;
+    private String clasificacionesJsonString;
+    //
+    ArrayList<Transmision> transmisiones;
+    private String transmisionesJsonString;
+    //
+    ArrayList<Marca> marcas;
+    private String marcasJsonString;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -90,7 +99,7 @@ public class ServiceVehiculo extends HttpServlet {
                 try {
                     v = new Vehiculo();
                     v.setCodigo(req.getParameter("codigo"));
-                    v.setClasificacion(buscarClasificacion(getListClasificaciones(),req.getParameter("tipo")));
+                    v.setClasificacion(buscarClasificacion(getListClasificaciones(),req.getParameter("clasificacion")));
                     v.setTransmision(buscarTransmision(getListTransmisiones(),req.getParameter("transmision")));
                     v.setMarca(buscarMarca(getListMarcas(),req.getParameter("marca")));
                     v.setCapacidad(Integer.parseInt(req.getParameter("capacidad")));
@@ -99,18 +108,18 @@ public class ServiceVehiculo extends HttpServlet {
                     v.setPrecio(Integer.parseInt(req.getParameter("precio")));
                     
                      if(ingresarVehiculo(v)){
-                                    try {
-                                        vehiculos = getListVehiculos();
-                                        } catch (Exception ex) {
-                                            Logger.getLogger(ServiceVehiculo.class.getName()).log(Level.SEVERE, null, ex);
-                                        }
+                        try {
+                            vehiculos = getListVehiculos();
+                            } catch (Exception ex) {
+                                Logger.getLogger(ServiceVehiculo.class.getName()).log(Level.SEVERE, null, ex);
+                            }
 
-                                            vehiculosJsonString = gson.toJson(vehiculos);
-                                            try {
-                                                out.println(vehiculosJsonString);
-                                            } finally {
-                                                out.close();
-                                            }                           
+                                vehiculosJsonString = gson.toJson(vehiculos);
+                                try {
+                                    out.println(vehiculosJsonString);
+                                } finally {
+                                    out.close();
+                                }                           
                     }else{
                          out.println("Error al agregar");                      
                     }
@@ -148,7 +157,7 @@ public class ServiceVehiculo extends HttpServlet {
                     
                     vehiculoEditar = new Vehiculo();
                     vehiculoEditar.setCodigo(req.getParameter("codigo"));
-                    vehiculoEditar.setClasificacion(buscarClasificacion(getListClasificaciones(),req.getParameter("tipo")));
+                    vehiculoEditar.setClasificacion(buscarClasificacion(getListClasificaciones(),req.getParameter("clasificacion")));
                     vehiculoEditar.setTransmision(buscarTransmision(getListTransmisiones(),req.getParameter("transmision")));
                     vehiculoEditar.setMarca(buscarMarca(getListMarcas(),req.getParameter("marca")));
                     vehiculoEditar.setCapacidad(Integer.parseInt(req.getParameter("capacidad")));
@@ -179,13 +188,43 @@ public class ServiceVehiculo extends HttpServlet {
                 }
                     break;
             case 5:
-                
-//                estudiantesJsonString = gson.toJson(estudiantes.get(estudiantes.size() - 1));
-//                try {
-//                    out.println(estudiantesJsonString);
-//                } finally {
-//                    out.close();
-//                }
+                try{
+                    clasificaciones = getListClasificaciones();
+                }catch(Exception e){
+                    Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, e);
+                }
+                clasificacionesJsonString = gson.toJson(clasificaciones);
+                try{
+                    out.println(clasificacionesJsonString);
+                }finally{
+                    out.close();
+                }
+                break;
+            case 6:
+                try{
+                    transmisiones = getListTransmisiones();
+                }catch(Exception e){
+                    Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, e);
+                }
+                transmisionesJsonString = gson.toJson(transmisiones);
+                try{
+                    out.println(transmisionesJsonString);
+                }finally{
+                    out.close();
+                }
+                break;
+            case 7:
+                try{
+                    marcas = getListMarcas();
+                }catch(Exception e){
+                    Logger.getLogger(Vehiculo.class.getName()).log(Level.SEVERE, null, e);
+                }
+                marcasJsonString = gson.toJson(marcas);
+                try{
+                    out.println(marcasJsonString);
+                }finally{
+                    out.close();
+                }
                 break;
         }
 

@@ -24,14 +24,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-
-import com.example.mobilecontrol.Adapter.ClienteAdapter;
-import com.example.mobilecontrol.Helper.RecyclerItemTouchHelper;
-import com.example.mobilecontrol.LogicaNegocio.Cliente;
 import com.example.mobilecontrol.R;
+
+import com.example.mobilecontrol.Adapter.VehiculoAdapter;
+import com.example.mobilecontrol.Helper.RecyclerItemTouchHelper;
+import com.example.mobilecontrol.LogicaNegocio.Vehiculo;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -40,35 +39,32 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AdmClienteActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, ClienteAdapter.ClienteAdapterListener{
+public class AdmVehiculoActivity extends AppCompatActivity  implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, VehiculoAdapter.VehiculoAdapterListener{
 
     private RecyclerView mRecyclerView;
-    private ClienteAdapter mAdapter;
-    private List<Cliente> clienteList;
+    private VehiculoAdapter mAdapter;
+    private List<Vehiculo> vehiculoList;
     private CoordinatorLayout coordinatorLayout;
     private SearchView searchView;
     private FloatingActionButton fab;
 
-   // String apiUrl = "http://192.168.0.24:8080/BE-LabConnection/ServiceCliente?";
-    String apiUrl = "http://192.168.0.27:8080/BE-LabConnection/ServiceCliente?";
-
+    String apiUrl = "http://192.168.0.27:8080/BE-LabConnection/ServiceVehiculo?";
     String apiUrlTemporal = "";
-  //  private ModelData model;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_adm_cliente);
-        Toolbar toolbar = findViewById(R.id.toolbarCliente);
+        setContentView(R.layout.activity_adm_vehiculo);
+        Toolbar toolbar = findViewById(R.id.toolbarVehiculo);
         setSupportActionBar(toolbar);
 
         //toolbar fancy stuff
-       // getSupportActionBar().setTitle(getString(R.string.my_profesor));
+        // getSupportActionBar().setTitle(getString(R.string.my_curso));
 
-        mRecyclerView = findViewById(R.id.recycler_clienteFld);
-        clienteList = new ArrayList<>();
-        mAdapter = new ClienteAdapter(clienteList, this);
-        coordinatorLayout = findViewById(R.id.coordinator_layoutCliente);
+        mRecyclerView = findViewById(R.id.recycler_vehiculoFld);
+        vehiculoList = new ArrayList<>();
+        mAdapter = new VehiculoAdapter(vehiculoList, this);
+        coordinatorLayout = findViewById(R.id.coordinator_layoutVehiculo);
 
         // white background notification bar
         whiteNotificationBar(mRecyclerView);
@@ -79,16 +75,16 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         mRecyclerView.setAdapter(mAdapter);
 
-
         apiUrlTemporal = apiUrl + "opc=1";
         MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
         myAsyncTasks.execute();
+
         // go to update or add career
-        fab = findViewById(R.id.addBtnCliente);
+        fab = findViewById(R.id.addBtnVehiculo);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                goToAddUpdCliente();
+                goToAddUpdVehiculo();
             }
         });
 
@@ -106,26 +102,33 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
         mAdapter.notifyDataSetChanged();
     }
 
+    private void whiteNotificationBar(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int flags = view.getSystemUiVisibility();
+            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            view.setSystemUiVisibility(flags);
+            getWindow().setStatusBarColor(Color.WHITE);
+        }
+    }
+
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
         if (direction == ItemTouchHelper.START) {
-            if (viewHolder instanceof ClienteAdapter.MyViewHolder) {
+            if (viewHolder instanceof VehiculoAdapter.MyViewHolder) {
                 // get the removed item name to display it in snack bar
-                String ced = clienteList.get(viewHolder.getAdapterPosition()).getCedula();
-                String name = clienteList.get(viewHolder.getAdapterPosition()).getNombre();
+                String cod = vehiculoList.get(viewHolder.getAdapterPosition()).getCodigo();
 
-                apiUrlTemporal = apiUrl + "opc=3&cedula="+ced;
+                apiUrlTemporal = apiUrl + "opc=3&codigo="+cod;
                 MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                 myAsyncTasks.execute();
+
                 // save the index deleted
                 final int deletedIndex = viewHolder.getAdapterPosition();
                 // remove the item from recyclerView
-
-
                 mAdapter.removeItem(viewHolder.getAdapterPosition());
 
                 // showing snack bar with Undo option
-                Snackbar snackbar = Snackbar.make(coordinatorLayout, name + " removido!", Snackbar.LENGTH_LONG);
+                Snackbar snackbar = Snackbar.make(coordinatorLayout, cod + " removido!", Snackbar.LENGTH_LONG);
                 snackbar.setAction("UNDO", new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -138,18 +141,17 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
             }
         } else {
             //If is editing a row object
-            Cliente aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
+            Vehiculo aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
             //send data to Edit Activity
-            Intent intent = new Intent(this, AddUpdClienteActivity.class);
+            Intent intent = new Intent(this, AddUpdVehiculoActivity.class);
             intent.putExtra("editable", true);
-            intent.putExtra("cliente", aux);
+            intent.putExtra("vehiculo", aux);
             mAdapter.notifyDataSetChanged(); //restart left swipe view
             startActivity(intent);
         }
     }
 
     public class MyAsyncTasks extends AsyncTask<String, String, String> {
-
 
         @Override
         protected void onPreExecute() {
@@ -204,16 +206,16 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
         protected void onPostExecute(String s) {
             //S tiene la lista Actualizada que recibe del web service
             //Se actualiza el recycler view
-         try {
+            try {
                 Gson gson = new Gson();
-                ArrayList<Cliente> ClienteList= (ArrayList<Cliente>) gson.fromJson(s,
-                        new TypeToken<ArrayList<Cliente>>() {
+                ArrayList<Vehiculo> VehiculoList= (ArrayList<Vehiculo>) gson.fromJson(s,
+                        new TypeToken<ArrayList<Vehiculo>>() {
                         }.getType());
 
 
-                clienteList = ClienteList;
-                mAdapter = new ClienteAdapter(clienteList, AdmClienteActivity.this);
-                coordinatorLayout = findViewById(R.id.coordinator_layoutCliente);
+                vehiculoList = VehiculoList;
+                mAdapter = new VehiculoAdapter(vehiculoList, AdmVehiculoActivity.this);
+                coordinatorLayout = findViewById(R.id.coordinator_layoutVehiculo);
 
                 // white background notification bar
                 whiteNotificationBar(mRecyclerView);
@@ -221,7 +223,7 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
                 RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-                mRecyclerView.addItemDecoration(new DividerItemDecoration(AdmClienteActivity.this, DividerItemDecoration.VERTICAL));
+                mRecyclerView.addItemDecoration(new DividerItemDecoration(AdmVehiculoActivity.this, DividerItemDecoration.VERTICAL));
                 mRecyclerView.setAdapter(mAdapter);
 
 
@@ -233,15 +235,14 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
         }
     }
 
-
     @Override
     public void onItemMove(int source, int target) {
-        mAdapter.onItemMove(source, target);
+        mAdapter.onItemMove(source,target);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds profesorList to the action bar if it is present.
+        // Inflate the menu; this adds cursoList to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_search, menu);
 
         // Associate searchable configuration with the SearchView   !IMPORTANT
@@ -298,48 +299,36 @@ public class AdmClienteActivity extends AppCompatActivity implements RecyclerIte
         super.onBackPressed();
     }
 
-    private void whiteNotificationBar(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int flags = view.getSystemUiVisibility();
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-            view.setSystemUiVisibility(flags);
-            getWindow().setStatusBarColor(Color.WHITE);
-        }
-    }
-
     @Override
-    public void onContactSelected(Cliente cliente) { //TODO get the select item of recycleView
-        Toast.makeText(getApplicationContext(), "Selected: " + cliente.getCedula() + ", " + cliente.getNombre(), Toast.LENGTH_LONG).show();
+    public void onContactSelected(Vehiculo vehiculo) {
+        Toast.makeText(getApplicationContext(), "Vehiculo: "+ vehiculo.getCodigo()+", "+vehiculo.getDescripcion(), Toast.LENGTH_LONG).show();
     }
 
-    private void checkIntentInformation() {
+    public void checkIntentInformation(){
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
-            Cliente aux;
-            aux = (Cliente) getIntent().getSerializableExtra("addCliente");
-            if (aux == null) {
-                aux = (Cliente) getIntent().getSerializableExtra("editCliente");
-                if (aux != null) {
-                        apiUrlTemporal = apiUrl + "opc=4&cedula="+aux.getCedula()+"&nombre="+aux.getNombre()+"&telefono="+aux.getTelefono()+"&email="+aux.getEmail();
-                        MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
-                        myAsyncTasks.execute();
-                        Toast.makeText(getApplicationContext(), aux.getNombre() + " editado correctamente", Toast.LENGTH_LONG).show();
-                }
-            }else{
-                    apiUrlTemporal = apiUrl + "opc=2&cedula="+aux.getCedula()+"&nombre="+aux.getNombre()+"&telefono="+aux.getTelefono()+"&email="+aux.getEmail();
+        if(extras != null){
+            Vehiculo aux;
+            aux = (Vehiculo) getIntent().getSerializableExtra("addVehiculo");
+            if(aux==null){
+                aux = (Vehiculo)getIntent().getSerializableExtra("editVehiculo");
+                if(aux != null){
+                    apiUrlTemporal = apiUrl+"opc=4&codigo="+aux.getCodigo()+"&clasificacion="+aux.getClasificacion().getCodigo()+"&transmision="+aux.getTransmision().getCodigo()+"&marca="+aux.getMarca().getCodigo()+"&capacidad="+aux.getCapacidad()+"&placa="+aux.getPlaca()+"&descripcion="+aux.getDescripcion()+"&precio="+aux.getPrecio();
                     MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
                     myAsyncTasks.execute();
-                    Toast.makeText(getApplicationContext(), aux.getNombre() + " agregado correctamente", Toast.LENGTH_LONG).show();
-
+                    Toast.makeText(getApplicationContext(), "El Vehículo "+aux.getCodigo() + " ha sido editado correctamente", Toast.LENGTH_LONG).show();
+                }
+            }else{
+                apiUrlTemporal = apiUrl+"opc=2&codigo="+aux.getCodigo()+"&clasificacion="+aux.getClasificacion().getCodigo()+"&transmision="+aux.getTransmision().getCodigo()+"&marca="+aux.getMarca().getCodigo()+"&capacidad="+aux.getCapacidad()+"&placa="+aux.getPlaca()+"&descripcion="+aux.getDescripcion()+"&precio="+aux.getPrecio();
+                MyAsyncTasks myAsyncTasks = new MyAsyncTasks();
+                myAsyncTasks.execute();
+                Toast.makeText(getApplicationContext(), "El Vehículo "+aux.getCodigo() + " ha sido creado correctamente", Toast.LENGTH_LONG).show();
             }
         }
     }
 
-    private void goToAddUpdCliente() {
-        Intent intent = new Intent(this, AddUpdClienteActivity.class);
+    public void goToAddUpdVehiculo(){
+        Intent intent = new Intent(this, AddUpdVehiculoActivity.class);
         intent.putExtra("editable", false);
         startActivity(intent);
     }
-
-
 }

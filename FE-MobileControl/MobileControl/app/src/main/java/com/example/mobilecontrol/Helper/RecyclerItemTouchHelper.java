@@ -12,6 +12,8 @@ import android.view.View;
 
 import com.example.mobilecontrol.Adapter.AgenciaAdapter;
 import com.example.mobilecontrol.Adapter.ClienteAdapter;
+import com.example.mobilecontrol.Adapter.ReservaAdapter;
+import com.example.mobilecontrol.Adapter.VehiculoAdapter;
 import com.example.mobilecontrol.LogicaNegocio.Cliente;
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
@@ -69,9 +71,17 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                 backgroundViewDelete = ((ClienteAdapter.MyViewHolder) viewHolder).viewBackgroundDelete;
                 foregroundView = ((ClienteAdapter.MyViewHolder) viewHolder).viewForeground;
             }else if (this.listener.getClass().getSimpleName().equals("AdmAgenciaActivity")) {
-                    backgroundViewEdit = ((AgenciaAdapter.MyViewHolder) viewHolder).viewBackgroundEdit;
-                    backgroundViewDelete = ((AgenciaAdapter.MyViewHolder) viewHolder).viewBackgroundDelete;
-                    foregroundView = ((AgenciaAdapter.MyViewHolder) viewHolder).viewForeground;
+                backgroundViewEdit = ((AgenciaAdapter.MyViewHolder) viewHolder).viewBackgroundEdit;
+                backgroundViewDelete = ((AgenciaAdapter.MyViewHolder) viewHolder).viewBackgroundDelete;
+                foregroundView = ((AgenciaAdapter.MyViewHolder) viewHolder).viewForeground;
+            }else if (this.listener.getClass().getSimpleName().equals("AdmVehiculoActivity")) {
+                backgroundViewEdit = ((VehiculoAdapter.MyViewHolder) viewHolder).viewBackgroundEdit;
+                backgroundViewDelete = ((VehiculoAdapter.MyViewHolder) viewHolder).viewBackgroundDelete;
+                foregroundView = ((VehiculoAdapter.MyViewHolder) viewHolder).viewForeground;
+            }else if (this.listener.getClass().getSimpleName().equals("AdmReservaActivity")) {
+                    backgroundViewEdit = ((ReservaAdapter.MyViewHolder) viewHolder).viewBackgroundEdit;
+                    backgroundViewDelete = ((ReservaAdapter.MyViewHolder) viewHolder).viewBackgroundDelete;
+                    foregroundView = ((ReservaAdapter.MyViewHolder) viewHolder).viewForeground;
                 }
 //                else if (this.listener.getClass().getSimpleName().equals("AdmAlumnoActivity")) {
 //                backgroundViewEdit = ((AlumnoAdapter.MyViewHolder) viewHolder).viewBackgroundEdit;

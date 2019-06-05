@@ -9,11 +9,13 @@ import Datos.GlobalException;
 import Datos.NoDataException;
 import Datos.ServicioAgencia;
 import Datos.ServicioCliente;
+import Datos.ServicioReserva;
 import Datos.ServicioVehiculo;
 import Entidades.Agencia;
 import Entidades.Clasificacion;
 import Entidades.Cliente;
 import Entidades.Marca;
+import Entidades.Reserva;
 import Entidades.Transmision;
 import Entidades.Vehiculo;
 import java.sql.SQLException;
@@ -28,6 +30,7 @@ public class Control {
     private ServicioCliente servicioCliente;
     private ServicioAgencia servicioAgencia;
     private ServicioVehiculo servicioVehiculo;
+    private ServicioReserva servicioReserva;
     
     private static Control uniqueInstance;
     public static Control instance()
@@ -42,7 +45,7 @@ public class Control {
     {
         servicioCliente = new ServicioCliente();
         servicioAgencia = new ServicioAgencia();
-        servicioVehiculo = new ServicioVehiculo();
+        servicioReserva = new ServicioReserva();
     }
     
     //Clientes
@@ -85,30 +88,61 @@ public class Control {
     
     //Vehiculos
     public void insertarVehiculo(Vehiculo vehiculo) throws Exception{
+        servicioVehiculo = new ServicioVehiculo();
         servicioVehiculo.insertarVehiculo(vehiculo);
+        servicioVehiculo = null;
     }
     
     public void modificarVehiculo(Vehiculo vehiculo) throws Exception{
+        servicioVehiculo = new ServicioVehiculo();
         servicioVehiculo.editarVehiculo(vehiculo);
+        servicioVehiculo = null;
     }
     
    public void eliminarVehiculo(String codigo) throws Exception{
+        servicioVehiculo = new ServicioVehiculo();
         servicioVehiculo.eliminarVehiculo(codigo);
+        servicioVehiculo = null;
     }
     
     public ArrayList<Vehiculo> listarVehiculos() throws GlobalException, NoDataException{
+        servicioVehiculo = new ServicioVehiculo();
         return servicioVehiculo.listarVehiculos();
     }
     
     public ArrayList<Clasificacion> listarClasificaciones() throws GlobalException, NoDataException{
+        servicioVehiculo = new ServicioVehiculo();
         return servicioVehiculo.listarClasificaciones();
     }
     
     public ArrayList<Marca> listarMarcas() throws GlobalException, NoDataException{
+        servicioVehiculo = new ServicioVehiculo();
         return servicioVehiculo.listarMarcas();
     }
     
     public ArrayList<Transmision> listarTrasmisiones() throws GlobalException, NoDataException{
+        servicioVehiculo = new ServicioVehiculo();
         return servicioVehiculo.listarTransmisiones();
+    }
+    
+    //RESERVA
+    public void insertarReserva(Reserva reserva) throws Exception{
+        servicioReserva.insertarReserva(reserva);
+    }
+    
+    public void modificarReserva(Reserva reserva) throws Exception{
+        servicioReserva.editarReserva(reserva);
+    }
+    
+   public void eliminarReserva(String codigo) throws Exception{
+        servicioReserva.eliminarReserva(codigo);
+    }
+    
+    public ArrayList<Reserva> listarReservas() throws GlobalException, NoDataException{
+        return servicioReserva.listarReservas();
+    }
+    
+    public ArrayList<Vehiculo> listarReservasVehiculos() throws GlobalException, NoDataException{
+        return servicioReserva.listarReservasVehiculos();
     }
 }

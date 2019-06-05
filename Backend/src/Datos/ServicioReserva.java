@@ -5,31 +5,32 @@
  */
 package Datos;
 
+import Entidades.Agencia;
 import Entidades.Clasificacion;
+import Entidades.Cliente;
 import Entidades.Marca;
+import Entidades.Reserva;
 import Entidades.Transmision;
 import Entidades.Vehiculo;
 import java.sql.CallableStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import oracle.jdbc.OracleTypes;
 
 /**
  *
- * @author david
+ * @author Usuario1
  */
-public class ServicioVehiculo extends Servicio{
-     private static final String INSERTARVEHICULO = "{call INSERTARVEHICULO(?,?,?,?,?,?,?,?)}";
-    private static final String ELIMINARVEHICULO = "{call ELIMINARVEHICULO(?)}";  
-    private static final String MODIFICARVEHICULO = "{call MODIFICARVEHICULO(?,?,?,?,?,?,?,?)}";
-    private static final String LISTARVEHICULOS = "{?=call LISTARVEHICULOS()}";
-    private static final String LISTARMARCAVEHICULOS = "{?=call LISTARMARCAVEHICULOS()}";
-    private static final String LISTARTIPOTRANSMISIONVEHICULOS = "{?=call LISTARTIPOTRANSMISIONVEHICULOS()}";
-    private static final String LISTARTIPOVEHICULOS = "{?=call LISTARTIPOVEHICULOS()}";
+public class ServicioReserva extends Servicio{
+    private static final String INSERTARRESERVA = "{call INSERTARRESERVA(?,?,?,?,?,?)}";
+    private static final String ELIMINARRESERVA = "{call ELIMINARRESERVA(?)}";  
+    private static final String MODIFICARRESERVA = "{call MODIFICARRESERVA(?,?,?,?,?,?)}";
+    private static final String LISTARRESERVAS = "{?=call LISTARRESERVAS()}";
+    
+    private static final String LISTARRESERVASVEHICULOS = "{?=call LISTARVEHICULOS()}"; 
     
     public Marca marca(ResultSet rs) throws GlobalException, NoDataException{
         try {
@@ -65,7 +66,7 @@ public class ServicioVehiculo extends Servicio{
         }
     }
         
-        public Transmision transmision(ResultSet rs) throws GlobalException, NoDataException{
+    public Transmision transmision(ResultSet rs) throws GlobalException, NoDataException{
         try {
             conectar();
         } catch (ClassNotFoundException e) {
@@ -108,7 +109,74 @@ public class ServicioVehiculo extends Servicio{
         }
     }
     
-    public boolean insertarVehiculo(Vehiculo vehiculo) throws GlobalException  	
+    public Agencia agencia(ResultSet rs) throws GlobalException, NoDataException{
+        try {
+            conectar();
+        } catch (ClassNotFoundException e) {
+            throw new GlobalException("No se ha localizado el driver");
+        } catch (SQLException e) {
+            throw new NoDataException("La base de datos no se encuentra disponible");
+        }
+        try{
+            Agencia v = new Agencia();
+            v.setCodigo(rs.getString("COD_AGENCIA"));
+            v.setNombre(rs.getString("NOMBRE_AGENCIA"));
+            v.setTelefono(rs.getString("TELEFONO_AGENCIA"));
+            v.setEmail(rs.getString("EMAIL_AGENCIA"));
+            v.setUbicacion(rs.getString("UBICACION_AGENCIA"));
+            v.setHorario(rs.getString("HORARIO_AGENCIA"));
+            return v;
+        }catch(SQLException e){
+            System.out.println("Agencia "+e+'\n');
+            return null;
+        }
+    }
+    
+    public Cliente cliente(ResultSet rs) throws GlobalException, NoDataException{
+        try {
+            conectar();
+        } catch (ClassNotFoundException e) {
+            throw new GlobalException("No se ha localizado el driver");
+        } catch (SQLException e) {
+            throw new NoDataException("La base de datos no se encuentra disponible");
+        }
+        try{
+            Cliente v = new Cliente();
+            v.setCedula(rs.getString("CED_CLIENTE"));
+            v.setNombre(rs.getString("NOMBRE_CLIENTE"));
+            v.setTelefono(rs.getString("TELEFONO_CLIENTE"));
+            v.setEmail(rs.getString("EMAIL_CLIENTE"));
+            return v;
+        }catch(SQLException e){
+            System.out.println("Cliente "+e+'\n');
+            return null;
+        }
+    }
+    
+    public Reserva reserva(ResultSet rs) throws GlobalException, NoDataException{
+        try {
+            conectar();
+        } catch (ClassNotFoundException e) {
+            throw new GlobalException("No se ha localizado el driver");
+        } catch (SQLException e) {
+            throw new NoDataException("La base de datos no se encuentra disponible");
+        }
+        try{
+            Reserva v = new Reserva();
+            v.setCodigo(rs.getString("COD_CLIENTE"));
+            v.setAgencia(agencia(rs));
+            v.setCliente(cliente(rs));
+            v.setVehiculo(vehiculo(rs));
+            v.setFecha_inicio(rs.getDate("FECHA_INICIO"));
+            v.setFecha_final(rs.getDate("FECHA_FINAL"));
+            return v;
+        }catch(SQLException e){
+            System.out.println("Cliente "+e+'\n');
+            return null;
+        }
+    }
+    
+    public boolean insertarReserva(Reserva reserva) throws GlobalException  	
     {
         try 
         {
@@ -126,26 +194,23 @@ public class ServicioVehiculo extends Servicio{
         
         try 
         {
-            pstmt = conexion.prepareCall(INSERTARVEHICULO);
-            pstmt.setString(1,vehiculo.getCodigo());
+            pstmt = conexion.prepareCall(INSERTARRESERVA);
+            pstmt.setString(1,reserva.getCodigo());
             
-            String tipo = "";
-            tipo+=vehiculo.getClasificacion().getCodigo();
-            pstmt.setString(2, tipo);
+            String agencia = "";
+            agencia+=reserva.getAgencia().getCodigo();
+            pstmt.setString(2, agencia);
             
-            String transimsion = "";
-            transimsion+=vehiculo.getTransmision().getCodigo();
-            pstmt.setString(3, transimsion);
+            String cliente = "";
+            cliente+=reserva.getCliente().getCedula();
+            pstmt.setString(3, cliente);
             
-            String marca = "";
-            marca+=vehiculo.getMarca().getCodigo();
-            pstmt.setString(4, marca);
+            String vehiculo = "";
+            vehiculo+=reserva.getVehiculo().getCodigo();
+            pstmt.setString(4, vehiculo);
             
-            pstmt.setInt(5,vehiculo.getCapacidad());
-            pstmt.setString(6,vehiculo.getPlaca());
-            pstmt.setString(7,vehiculo.getDescripcion());
-            pstmt.setInt(8,vehiculo.getPrecio());
-            
+            pstmt.setDate(5,reserva.getFecha_inicio());
+            pstmt.setDate(6,reserva.getFecha_final());
             
             boolean resultado = pstmt.execute();
             if (resultado == true) 
@@ -175,10 +240,9 @@ public class ServicioVehiculo extends Servicio{
             }
             return true;
         }
-        
     }
     
-    public ArrayList listarVehiculos() 	throws GlobalException, NoDataException
+    public ArrayList listarReservas() 	throws GlobalException, NoDataException
     {
         try 
         {
@@ -208,15 +272,14 @@ public class ServicioVehiculo extends Servicio{
 	//Curso curso = null;
         try
         {
-            
-                pstmt = conexion.prepareCall(LISTARVEHICULOS);
-                pstmt.registerOutParameter(1, OracleTypes.CURSOR);
-                pstmt.execute();
-                rs = (ResultSet)pstmt.getObject(1);
-                while (rs.next())
-                {
-                    coleccion.add(vehiculo(rs));
-                }
+            pstmt = conexion.prepareCall(LISTARRESERVAS);
+            pstmt.registerOutParameter(1, OracleTypes.CURSOR);
+            pstmt.execute();
+            rs = (ResultSet)pstmt.getObject(1);
+            while (rs.next())
+            {
+                coleccion.add(reserva(rs));
+            }
         }
         catch (SQLException e)
         {
@@ -259,10 +322,11 @@ public class ServicioVehiculo extends Servicio{
             }
         }
         return coleccion;
-        
     }
     
-     public boolean eliminarVehiculo(String codigo) throws GlobalException,SQLException  	
+    
+    
+    public boolean eliminarReserva(String codigo) throws GlobalException,SQLException  	
     {
         try 
         {
@@ -280,7 +344,7 @@ public class ServicioVehiculo extends Servicio{
         
         try 
         {
-            pstmt = conexion.prepareCall(ELIMINARVEHICULO);
+            pstmt = conexion.prepareCall(ELIMINARRESERVA);
             pstmt.setString(1,codigo);
             
             boolean resultado = pstmt.execute();
@@ -312,7 +376,7 @@ public class ServicioVehiculo extends Servicio{
         }     
     }
      
-    public boolean editarVehiculo(Vehiculo vehiculo) throws GlobalException  	
+    public boolean editarReserva(Reserva reserva) throws GlobalException  	
     {
         try 
         {
@@ -330,25 +394,23 @@ public class ServicioVehiculo extends Servicio{
         
         try 
         {
-            pstmt = conexion.prepareCall(MODIFICARVEHICULO);
-            pstmt.setString(1,vehiculo.getCodigo());
+            pstmt = conexion.prepareCall(MODIFICARRESERVA);
+            pstmt.setString(1,reserva.getCodigo());
             
-            String tipo = "";
-            tipo+=vehiculo.getClasificacion().getCodigo();
-            pstmt.setString(2, tipo);
+            String agencia = "";
+            agencia+=reserva.getAgencia().getCodigo();
+            pstmt.setString(2, agencia);
             
-            String transimsion = "";
-            transimsion+=vehiculo.getTransmision().getCodigo();
-            pstmt.setString(3, transimsion);
+            String cliente = "";
+            cliente+=reserva.getCliente().getCedula();
+            pstmt.setString(3, cliente);
             
-            String marca = "";
-            marca+=vehiculo.getMarca().getCodigo();
-            pstmt.setString(4, marca);
+            String vehiculo = "";
+            vehiculo+=reserva.getVehiculo().getCodigo();
+            pstmt.setString(4, vehiculo);
             
-            pstmt.setInt(5,vehiculo.getCapacidad());
-            pstmt.setString(6,vehiculo.getPlaca());
-            pstmt.setString(7,vehiculo.getDescripcion());
-            pstmt.setInt(8,vehiculo.getPrecio());
+            pstmt.setDate(5,reserva.getFecha_inicio());
+            pstmt.setDate(6,reserva.getFecha_final());
             
             boolean resultado = pstmt.execute();
             if (resultado == true) 
@@ -380,7 +442,7 @@ public class ServicioVehiculo extends Servicio{
         }
     }
     
-    public ArrayList listarClasificaciones() throws GlobalException  	
+    public ArrayList listarReservasVehiculos() 	throws GlobalException, NoDataException
     {
         try 
         {
@@ -388,34 +450,45 @@ public class ServicioVehiculo extends Servicio{
         } 
         catch (ClassNotFoundException e) 
         {
-            throw new GlobalException("No se ha localizado el driver.");
+            try{
+                throw new GlobalException("No se ha localizado el driver.");
+            } 
+            catch (GlobalException ex)
+            {
+                Logger.getLogger(ServicioVehiculo.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } 
         catch (SQLException e) 
         {
-            throw new GlobalException("La base de datos no se encuentra disponible.");
+            try {
+                throw new GlobalException("La base de datos no se encuentra disponible.");
+            } catch (GlobalException ex) {
+                Logger.getLogger(ServicioVehiculo.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         CallableStatement pstmt=null;
         ResultSet rs = null;
 	ArrayList coleccion = new ArrayList();
-	Clasificacion clasificaion = null;
+	//Curso curso = null;
         try
         {
-                pstmt = conexion.prepareCall(LISTARTIPOVEHICULOS);
-                pstmt.registerOutParameter(1, OracleTypes.CURSOR);
-                pstmt.execute();
-                rs = (ResultSet)pstmt.getObject(1);
-                while (rs.next())
-                {
-                        clasificaion = new Clasificacion(
-                                            rs.getString("COD_TIPO_VEHICULO"),
-                                            rs.getString("DESCRIPCION_TIPO_VEHICULO"));
-                        coleccion.add(clasificaion);
-                }
+            pstmt = conexion.prepareCall(LISTARRESERVASVEHICULOS);
+            pstmt.registerOutParameter(1, OracleTypes.CURSOR);
+            pstmt.execute();
+            rs = (ResultSet)pstmt.getObject(1);
+            while (rs.next())
+            {
+                coleccion.add(vehiculo(rs));
+            }
         }
         catch (SQLException e)
         {
             e.printStackTrace();
-            throw new GlobalException("Error al recuperar datos.\n");
+            try {
+                throw new GlobalException("Error al recuperar datos.\n");
+            } catch (GlobalException ex) {
+                Logger.getLogger(ServicioVehiculo.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         finally
         {
@@ -433,139 +506,21 @@ public class ServicioVehiculo extends Servicio{
             }
             catch (SQLException e)
             {
-                throw new GlobalException("Estatutos invalidos o nulos.");
+                try {
+                    throw new GlobalException("Estatutos invalidos o nulos.");
+                } catch (GlobalException ex) {
+                    Logger.getLogger(ServicioVehiculo.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
         if (coleccion == null || coleccion.isEmpty())
         {
-            throw new GlobalException("No hay datos.");
-        }
-        return coleccion;        
-    }
-    
-    public ArrayList listarMarcas() throws GlobalException  	
-    {
-        try 
-        {
-            conectar();
-        } 
-        catch (ClassNotFoundException e) 
-        {
-            throw new GlobalException("No se ha localizado el driver.");
-        } 
-        catch (SQLException e) 
-        {
-            throw new GlobalException("La base de datos no se encuentra disponible.");
-        }
-        CallableStatement pstmt=null;
-        ResultSet rs = null;
-	ArrayList coleccion = new ArrayList();
-	Marca marca = null;
-        try
-        {
-                pstmt = conexion.prepareCall(LISTARMARCAVEHICULOS);
-                pstmt.registerOutParameter(1, OracleTypes.CURSOR);
-                pstmt.execute();
-                rs = (ResultSet)pstmt.getObject(1);
-                while (rs.next())
-                {
-                        marca = new Marca(
-                                            rs.getString("COD_MARCA_VEHICULO"),
-                                            rs.getString("DESCRIPCION_MARCA_VEHICULO"));
-                        coleccion.add(marca);
-                }
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-            throw new GlobalException("Error al recuperar datos.\n");
-        }
-        finally
-        {
-            try
-            {
-                if (rs != null)
-                {
-                    rs.close();
-                }
-                if (pstmt != null)
-                {
-                    pstmt.close();
-                }
-                desconectar();
-            }
-            catch (SQLException e)
-            {
-                throw new GlobalException("Estatutos invalidos o nulos.");
+            try {
+                throw new GlobalException("No hay datos.");
+            } catch (GlobalException ex) {
+                Logger.getLogger(ServicioVehiculo.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        if (coleccion == null || coleccion.isEmpty())
-        {
-            throw new GlobalException("No hay datos.");
-        }
-        return coleccion;        
-    }
-        
-    public ArrayList listarTransmisiones() throws GlobalException  	
-    {
-        try 
-        {
-            conectar();
-        } 
-        catch (ClassNotFoundException e) 
-        {
-            throw new GlobalException("No se ha localizado el driver.");
-        } 
-        catch (SQLException e) 
-        {
-            throw new GlobalException("La base de datos no se encuentra disponible.");
-        }
-        CallableStatement pstmt=null;
-        ResultSet rs = null;
-	ArrayList coleccion = new ArrayList();
-	Transmision transmision = null;
-        try
-        {
-                pstmt = conexion.prepareCall(LISTARTIPOTRANSMISIONVEHICULOS);
-                pstmt.registerOutParameter(1, OracleTypes.CURSOR);
-                pstmt.execute();
-                rs = (ResultSet)pstmt.getObject(1);
-                while (rs.next())
-                {
-                        transmision = new Transmision(
-                                            rs.getString("COD_TIPO_TRANSMISION"),
-                                            rs.getString("DESCRIPCION_TIPO_TRANSMISION"));
-                        coleccion.add(transmision);
-                }
-        }
-        catch (SQLException e)
-        {
-            e.printStackTrace();
-            throw new GlobalException("Error al recuperar datos.\n");
-        }
-        finally
-        {
-            try
-            {
-                if (rs != null)
-                {
-                    rs.close();
-                }
-                if (pstmt != null)
-                {
-                    pstmt.close();
-                }
-                desconectar();
-            }
-            catch (SQLException e)
-            {
-                throw new GlobalException("Estatutos invalidos o nulos.");
-            }
-        }
-        if (coleccion == null || coleccion.isEmpty())
-        {
-            throw new GlobalException("No hay datos.");
-        }
-        return coleccion;        
+        return coleccion;
     }
 }

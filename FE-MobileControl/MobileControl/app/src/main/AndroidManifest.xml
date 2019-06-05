@@ -13,6 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".Activities.AddUpdReservaActivity"></activity>
+        <activity
+            android:name=".Activities.AdmReservaActivity"
+            android:label="@string/title_activity_adm_reserva"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activities.AddUpdVehiculoActivity" />
+        <activity
+            android:name=".Activities.AdmVehiculoActivity"
+            android:label="@string/title_activity_adm_vehiculo"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".Activities.MainActivity"
             android:label="@string/app_name"
@@ -22,34 +32,28 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-
-        <!-- ########################## Cliente ########################## -->
+        </activity> <!-- ########################## Cliente ########################## -->
         <activity
             android:name=".Activities.AdmClienteActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="Clientes">
+            android:label="Clientes"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Activities.AddUpdClienteActivity"
-            android:label="Cliente"/>
-
-        <!-- ########################## Agencia ########################## -->
+            android:label="Cliente" /> <!-- ########################## Agencia ########################## -->
         <activity
             android:name=".Activities.AdmAgenciaActivity"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:label="Agencias">
+            android:label="Agencias"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
         </activity>
         <activity
             android:name=".Activities.AddUpdAgenciaActivity"
-            android:label="Agencia"/>
+            android:label="Agencia" />
     </application>
-
 </manifest>
